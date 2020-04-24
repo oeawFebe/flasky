@@ -86,4 +86,6 @@ def index():#request enables to access globally certain obj without adding an ar
 @app.route("/user/<name>")
 def user(name):
     return render_template("user.html",name=name)
-
+@app.shell_context_processor
+def make_shell_context():
+    return dict(db=db,User=User,Role=Role)
