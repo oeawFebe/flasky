@@ -1,7 +1,10 @@
-from flask import Flask
-
+from flask import Flask,render_template
+from flask_bootstrap import Bootstrap
+from flask_moment import Moment
+from datetime import datetime
 app=Flask(__name__)
-
+bootstrap=Bootstrap(app)
+moment=Moment(app)
 # @app.route("/")
 # def index():
 #     return "<h1>Hello World!</h1>"
@@ -9,8 +12,7 @@ app=Flask(__name__)
 from flask import request
 @app.route("/")
 def index():#request enables to access globally certain obj without adding an arg to view func
-    user_agent=request.headers.get('User-Agent')
-    return '<p>Your browser is {}</p>'.format(user_agent)
+    return render_template('index.html',current_time=datetime.utcnow())
 
 # @app.route("/")
 # def index():
@@ -37,4 +39,4 @@ def index():#request enables to access globally certain obj without adding an ar
 
 @app.route("/user/<name>")
 def user(name):
-    return "<h1>Hello, {}!</h1>".format(name)
+    return render_template("user.html",name=name)
