@@ -1,3 +1,4 @@
+from flask_mail import Message
 from threading import Thread
 
 def send_email(to,subject,template,**kwargs):#kwargs will be template context, see line 3,4 below

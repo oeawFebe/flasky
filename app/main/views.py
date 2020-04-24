@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import render_template,session,redirect,url_for
+from flask import Flask,render_template,flash,session,redirect,url_for,request
 from . import main
 from .forms import NameForm
 from .. import db
@@ -14,8 +14,12 @@ def index():#request enables to access globally certain obj without adding an ar
             db.session.add(user)
             db.session.commit()
             session['known']=False
-            if app.config['FLASKY_ADMIN']:
-                send_email(app.config['FLASKY_ADMIN'],'New User','mail/new_user',user=user)
+            # if app.config['FLASKY_ADMIN']:
+            #     send_email(app.config['FLASKY_ADMIN'],'New User','mail/new_user',user=user)
+            import os
+            from ..email import send_email
+            if os.environ.get("FLASKY_ADMIN"):
+                send_email(os.environ.get("FLASKY_ADMIN"),"New User",'mail/vew_user',user=user)
         else:
             session['known']=True
         session['name']=form.name.data
@@ -23,4 +27,7 @@ def index():#request enables to access globally certain obj without adding an ar
         return redirect(url_for('.index'))
     return render_template('index.html',form=form,name=session.get('name'),known=session.get('known',False),current_time=datetime.utcnow())
 
-    
+@main.route("/user/<name>")
+def user(name):
+    return render_template("user.html",name=name)
+
