@@ -1,12 +1,14 @@
 from flask import Flask,render_template,flash,session,redirect,url_for,request
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
-from datetime import datetime
-import os
-from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField,SubmitField
 from wtforms.validators import DataRequired
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from datetime import datetime
+import os
+
 basedir=os.path.abspath(os.path.dirname(__file__))
 
 app=Flask(__name__)
@@ -17,6 +19,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db=SQLAlchemy(app)
 bootstrap=Bootstrap(app)
 moment=Moment(app)
+
+migrate=Migrate(app,db)
 
 class NameForm(FlaskForm):
     name=StringField('What is your name?', validators=[DataRequired()])#it isan html input elem with type="text"
