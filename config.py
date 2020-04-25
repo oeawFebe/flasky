@@ -12,6 +12,7 @@ class Config:
     FLASKY_ADMIN=os.environ.get('FLASKY_ADMIN',"obeythetestinggoat2@gmail.com")#recepient
     SQLALCHEMY_TRACK_MODIFICATIONS=False
 
+
     @staticmethod
     def init_app(app):
         pass

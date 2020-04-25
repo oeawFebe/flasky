@@ -4,6 +4,8 @@ from . import main
 from .forms import NameForm
 from .. import db
 from ..models import User
+from ...flasky import app
+
 @main.route('/',methods=['GET','POST'])
 def index():#request enables to access globally certain obj without adding an arg to view func
     form=NameForm()
@@ -14,18 +16,24 @@ def index():#request enables to access globally certain obj without adding an ar
             db.session.add(user)
             db.session.commit()
             session['known']=False
-            # if app.config['FLASKY_ADMIN']:
-            #     send_email(app.config['FLASKY_ADMIN'],'New User','mail/new_user',user=user)
-            import os
-            from ..email import send_email
-            if os.environ.get("FLASKY_ADMIN"):
-                send_email(os.environ.get("FLASKY_ADMIN"),"New User",'mail/vew_user',user=user)
+            if app.config['FLASKY_ADMIN']:
+                send_email(app.config['FLASKY_ADMIN'],'New User','mail/new_user',user=user)
+            # import os
+            # from ..email import send_email
+            # if os.environ.get("FLASKY_ADMIN"):
+            #     send_email(os.environ.get("FLASKY_ADMIN"),"New User",'mail/vew_user',user=user)
         else:
             session['known']=True
         session['name']=form.name.data
         form.name.data=""
         return redirect(url_for('.index'))
-    return render_template('index.html',form=form,name=session.get('name'),known=session.get('known',False),current_time=datetime.utcnow())
+    return render_template(
+        'index.html',
+        form=form,
+        name=session.get('name'),
+        known=session.get('known',False),
+        current_time=datetime.utcnow()
+        )
 
 @main.route("/user/<name>")
 def user(name):
