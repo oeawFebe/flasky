@@ -4,7 +4,6 @@ from . import main
 from .forms import NameForm
 from .. import db
 from ..models import User
-from ...flasky import app
 
 @main.route('/',methods=['GET','POST'])
 def index():#request enables to access globally certain obj without adding an arg to view func
