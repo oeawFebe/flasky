@@ -18,17 +18,10 @@ class Role(db.Model):
     default=db.Column(db.Boolean,default=False,index=True)
     permissions=db.Column(db.Integer)
     users = db.relationship('User', backref='role', lazy='dynamic')
-    def add_permission(self,perm):
-        if not self.has_permission(perm):
-            self.permissions+=perm
-    def remove_permission(self,perm):
-        if self.has_permission(perm):
-            self.permissions-=perm
-    def reset_permissions(self):
-        self.permissions=0
-    def has_permission(self,perm):
-        return self.permissions&perm==perm#The bitwise AND operator (&) compares each bit of the first operand to the corresponding bit of the second operand. If both bits are 1, the corresponding result bit is set to 1. Otherwise, the corresponding result bit is set to 0.
-
+    def __init__(self,**kwargs):
+        super(Role,self).__init__(**kwargs)
+        if self.permissions is None:
+            self.permissions=0
     @staticmethod
     def insert_roles():
         roles={'User':[Permission.FOLLOW,Permission.COMMENT,Permission.WRITE],
@@ -44,14 +37,18 @@ class Role(db.Model):
             for perm in roles[r]:
                 role.add_permission(perm)
                 role.default=(role.name==default_role)
-                db.session.add(role)
-            db.session.commit()
-
-
-    def __init__(self,**kwargs):
-        super(Role,self).__init__(**kwargs)
-        if self.permissions is None:
-            self.permissions=0
+            db.session.add(role)
+        db.session.commit()
+    def add_permission(self,perm):
+        if not self.has_permission(perm):
+            self.permissions+=perm
+    def remove_permission(self,perm):
+        if self.has_permission(perm):
+            self.permissions-=perm
+    def reset_permissions(self):
+        self.permissions=0
+    def has_permission(self,perm):
+        return self.permissions&perm==perm#The bitwise AND operator (&) compares each bit of the first operand to the corresponding bit of the second operand. If both bits are 1, the corresponding result bit is set to 1. Otherwise, the corresponding result bit is set to 0.
     def __repr__(self):
         return '<Role %r>' % self.name
 
@@ -130,7 +127,7 @@ class User(UserMixin, db.Model):
         new_email=data.get("new_email")
         if new_email is None:
             return False
-        if self.query.filter_by(email=new_email):
+        if self.query.filter_by(email=new_email) is not None:
             return False
         self.email=new_email
         db.session.add(self)
@@ -149,12 +146,9 @@ class AnonymousUser(AnonymousUserMixin):
     def can(self,permissions):
         return False
     def is_administrator(self):
-
         return False
 login_manager.anonymous_user=AnonymousUser
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
