@@ -9,3 +9,5 @@ app/auth/__pycache__/__init__.cpython-36.pyc
 app/auth/__pycache__/forms.cpython-36.pyc
 app/auth/__pycache__/views.cpython-36.pyc
 migrations/versions/__pycache__/9315d0914dee_initial.cpython-36.pyc
+data-dev.sqlite
+data.sqlite
