@@ -4,6 +4,8 @@ from flask_login import UserMixin,AnonymousUserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
 from datetime import datetime
+from markdown import markdown
+import bleach
 import hashlib
 from flask import request
 class Permission:
