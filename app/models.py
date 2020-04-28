@@ -3,7 +3,7 @@ from . import db, login_manager
 from flask_login import UserMixin,AnonymousUserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
-
+from datetime import datetime
 class Permission:
     FOLLOW=1
     COMMENT=2
@@ -58,9 +58,15 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), unique=True, index=True)
     username = db.Column(db.String(64), unique=True, index=True)
-    password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
+    name=db.Column(db.String(64))
+    location=db.Column(db.String(64))
+    about_me=db.Column(db.Text())
+    member_since=db.Column(db.DateTime(),default=datetime.utcnow)#function can be given. will be invoked bySQLAlchemy
+    last_seen=db.Column(db.DateTime(),default=datetime.utcnow)
+
     def __init__(self,**kwargs):
         super(User,self).__init__(**kwargs)
         if self.role is None:
@@ -76,6 +82,10 @@ class User(UserMixin, db.Model):
     def password(self, password):
         self.password_hash = generate_password_hash(password)
 
+    def ping(self):
+        self.last_seen=datetime.utcnow()
+        db.session.add(self)
+        db.session.commit()
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
