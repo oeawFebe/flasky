@@ -25,6 +25,7 @@ def get_posts_api():#
         "next":next,
         "count":pagination.total
         })
+
 @api.route("/posts/<int:id>")
 def get_post(id):
     post=Post.query.get_or_404(id)
