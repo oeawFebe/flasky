@@ -63,9 +63,8 @@ def profile(length,profile_dir):
         profile_dir=profile_dir)
     app.run(debug=False)
 
-@manager.command
+@app.cli.command
 def deploy():
     upgrade()
     Role.insert_roles()
     User.add_self_follows()
-    
