@@ -10,3 +10,4 @@ app/auth/__pycache__/views.cpython-36.pyc
 data-dev.sqlite
 data.sqlite
 migrations/
+temp/
