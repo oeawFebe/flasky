@@ -129,7 +129,7 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(json_response.get("count",0),1)
         self.assertEqual(json_response["posts"][0],json_post)
         #edit post
-        response=self.client.ut(url,headers=self.get_api_headers("john@example.com","cat"),data=json.dumps({"body":"updated body"}))
+        response=self.client.put(url,headers=self.get_api_headers("john@example.com","cat"),data=json.dumps({"body":"updated body"}))
         self.assertEqual(response.status_code,200)
         json_response=json.loads(response.get_data(as_text=True))
         self.assertEqual("http://localhost"+json_response["url"],url)
@@ -140,7 +140,7 @@ class APITestCase(unittest.TestCase):
         r=Role.query.filter_by(name="User").first()
         self.assertIsNotNone(r)
         u1=User(email="john@example.com",username="john",password="cat",confirmed=True,role=r)
-        u1=User(email="susan@example.com",username="susan",password="dog",confirmed=True,role=r)
+        u2=User(email="susan@example.com",username="susan",password="dog",confirmed=True,role=r)
         db.session.add_all([u1,u2])
         db.session.commit()
         response = self.client.get(
@@ -160,7 +160,7 @@ class APITestCase(unittest.TestCase):
         r=Role.query.filter_by(name="User").first()
         self.assertIsNotNone(r)
         u1=User(email="john@example.com",username="john",password="cat",confirmed=True,role=r)
-        u1=User(email="susan@example.com",username="susan",password="dog",confirmed=True,role=r)
+        u2=User(email="susan@example.com",username="susan",password="dog",confirmed=True,role=r)
         db.session.add_all([u1,u2])
         db.session.commit()
         #add a post

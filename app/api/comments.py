@@ -41,7 +41,7 @@ def get_post_comments(id):
         error_out=False
         )
     comments=pagination.items
-    preve=None
+    prev=None
     if pagination.has_prev:
         prev = url_for('api.get_post_comments', id=id, page=page-1)
     next = None
@@ -62,7 +62,7 @@ def new_post_comment(id):
     post=Post.query.get_or_404(id)
     comment=Comment.from_json(request.json)
     comment.author=g.current_user
-    omment.post=post
+    comment.post=post
     db.session.add(post)
     db.session.commit()
     return jsonify(comment.to_json()),201,{'Location': url_for('api.get_comment', id=comment.id)}
