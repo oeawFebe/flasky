@@ -218,3 +218,12 @@ def user(username):
     posts=pagination.items
     return render_template("user.html",user=user,posts=posts,pagination=pagination)
 
+@main.route("/shutdown")
+def sever_shutdown():
+    if not current_app.testing:
+        abort(404)
+    shutdown=request.environ.get("werkzeug.server.shutdown")
+    if not shutdown:
+        abort(500)
+    shutdown()
+    return "Shutting down..."
